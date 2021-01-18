@@ -3,6 +3,7 @@
 ## Minmax
 
 1. Écrivez une fonction `int maximum(int *t, int n)` qui prend en argument un tableau `t` contenant des entiers et un entier `n` correspondant au nombre de cases du tableau et qui renvoie la valeur du plus grand élément du tableau.
+    
     **Remarque :** On peut supposer que le tableau n'est pas vide, mais il faut tenir compte du fait qu'il peut contenir des valeurs négatives.
 
 2. Pourquoi doit-on donner la taille du tableau en paramètre de la fonction ?
@@ -31,32 +32,32 @@ void f(int a, int b, int *s, int *p) {
 ## Création dynamique de tableaux
 
 Lorsqu'une fonction est appelée dans un programme, elle dispose d'un espace en mémoire spécifique pour stocker les variables déclarées au cours de son exécution. Lorsque la fonction se termine, toutes ces variable (appelées variables *locales*) sont supprimées de la mémoire. L'espace dans lequel sont placées ces variables locales est couramment appelé *pile* (le terme officiel en C est *stockage automatique*), tandis que le reste de la mémoire utilisable par le programme est appelé *tas* (le terme officiel étant *stockage dynamique*).
-	
+    
 Jusqu'ici nous n'avons utilisé que la pile, puisque toutes les variables étaient automatiquement allouées, mais nous allons voir comment utiliser l'allocation dynamique pour créer des variables dans le tas.
 
 On cherche à écrire une fonction `int* copie(int *tab, int n)` qui prend en argument un tableau d'entiers et sa taille et renvoie une copie de ce tableau, c'est-à-dire un tableau se trouvant à un autre emplacement en mémoire mais contenant les mêmes valeurs.
-	
+    
 On considère la fonction suivante :
 ```C
 int* copie(int *tab, int n) {
-	int tab2[n];
-	for (int i = 0; i < n; i++) {
-		tab2[i] = tab[i];
-	}
-	return tab2;
+    int tab2[n];
+    for (int i = 0; i < n; i++) {
+        tab2[i] = tab[i];
+    }
+    return tab2;
 }
 ```
 6. Recopiez et compilez cette fonction. Essayez de comprendre le message d'alerte du compilateur.
 
 Pour résoudre ce problème, on pourrait passer en argument de la fonction un pointeur vers un emplacement de mémoire réservé à l'avance, comme on l'a fait précédemment, mais une autre solution consiste à allouer un espace mémoire dans le tas, qui ne sera donc pas libéré à la fin de la fonction.
-	
+    
 Pour cela, on utilise la fonction `malloc` qui prend comme argument la taille de la mémoire à allouer (en octets) et renvoie l'adresse d'un pointeur vers cet espace. Ainsi, si l'on veut assez de place pour stocker *n* objets de type `int`, on peut utiliser la syntaxe<sup id="fnb_1">[1](#fn_1)</sup> :
 ```C
 int *p;
 p = malloc(sizeof(int) * n);
 ```
 Notez que l'on utilise l'instruction `sizeof` pour déterminer l'espace mémoire occupé par un entier, ce qui permet de rester compatible entre les systèmes qui ne codent pas nécessairement les `int` sur le même espace, et permet aussi de ne pas avoir à se poser la question.
-	
+    
 7. Réécrivez la fonction `copie` en utilisant une allocation dynamique pour la variable `tab2`. Compilez et vérifiez que tout se passe bien.
 
 8. Écrivez une fonction `int* unsurdeux(int *tab, int n)` qui renvoie un tableau contenant les éléments de `tab` se trouvant aux indices pairs.
@@ -66,23 +67,23 @@ Lorsque l'on utilise la fonction `malloc` pour réserver de l'espace en mémoire
 La fonction `free` prend simplement en argument l'adresse d'un segment qui a été alloué par la commande `malloc`. On pourrait par exemple avoir la fonction `main` suivante :
 ```C
 int main() {
-	int tab[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-	int *tab_bis;
-	
-	tab_bis = unsurdeux(tab, 10);
-	for (int i = 0; i < 5; i++) {
-		printf("%d ", tab_bis[i]);
-	}
-	printf("\n");
-	free(tab_bis);
+    int tab[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int *tab_bis;
+    
+    tab_bis = unsurdeux(tab, 10);
+    for (int i = 0; i < 5; i++) {
+        printf("%d ", tab_bis[i]);
+    }
+    printf("\n");
+    free(tab_bis);
 }
 ```
 qui libère bien l'espace occupé par la variable `tab_bis`. Cependant, tout l'espace utilisé par le programme (pile et tas) est libéré à la fin de celui-ci, et dans cet exemple il n'est donc pas réellement nécessaire de libérer l'espace à la fin de la fonction `main`...
 
 ## Matrices
-	
+    
 On va maintenant s'intéresser à la manipulation de matrices, sous la forme de tableaux bi-dimensionnels. Le langage C ne prévoit pas de type particulier pour les tableaux à plusieurs dimensions, le moyen le plus naturel est donc de les représenter sous la forme de tableaux de tableaux.
-	
+    
 Ainsi, une matrice *n* x *m* (*n* lignes et *m* colonnes) sera un tableau contenant *n* tableaux, contenant à leur tour *m* entiers chacun. Donc dans les cases du premier tableau, il y a des pointeurs, qui pointent au début d'un tableau d'entiers. Un tableau d'entiers bidimensionnels est donc un objet de type `int**` puisqu'il pointe sur des éléments de type `int*`. La figure suivante illustre la représentation d'une matrice 5 x 3 en mémoire :
 
 ![Représentation d'une matrice 5 x 3](matrices.svg)
@@ -92,9 +93,9 @@ Dans un tel tableau, si l'on veut accéder à l'élément se trouvant sur la lig
 Pour rendre les choses un peu plus propres, on va ajouter à ce tableau deux entiers indiquant les dimensions de la matrice. L'ensemble des données sera mémorisé dans une structure :
 ```C
 struct Matrice {
-	int nb_lignes;
-	int nb_colonnes;
-	int **valeurs;
+    int nb_lignes;
+    int nb_colonnes;
+    int **valeurs;
 }
 ```
 
@@ -107,9 +108,9 @@ int l1[3] = {1, 2, 3};
 int l2[3] = {4, 5, 6};
 int *v[2] = {l1, l2};
 struct Matrice m = {
-	.nb_lignes = 2,
-	.nb_colonnes = 3,
-	.valeurs = v,
+    .nb_lignes = 2,
+    .nb_colonnes = 3,
+    .valeurs = v,
 };
 ```
 
@@ -120,14 +121,14 @@ Cette fonction va donc devoir créer un tableau contenant les pointeurs de chaqu
 Enfin, lorsque le tableau bidimensionnel est prêt, il faut créer l'objet de type `struct Matrice`, remplir ses champs et renvoyer le tout.
 
 10. Écrivez la fonction `struct Matrice matrice(int nbl, int nbc, int *valeurs)`.
-	**Indication :** La taille à allouer au tableau principal est `nbl * sizeof(int*)`, et la taille de chacun des tableaux correspondant à une ligne est `nbc * sizeof(int)`.
+    **Indication :** La taille à allouer au tableau principal est `nbl * sizeof(int*)`, et la taille de chacun des tableaux correspondant à une ligne est `nbc * sizeof(int)`.
 
 11.	Testez la fonction précédente à l'aide du code suivant :
 ```C
 int v1[12] = {
-	1, 2, 3, 4,
-	2, 4, 6, 8,
-	3, 6, 9, 12,
+    1, 2, 3, 4,
+    2, 4, 6, 8,
+    3, 6, 9, 12,
 };
 struct Matrice m1 = matrice(3, 4, v1);
 affiche(m1);
@@ -138,7 +139,7 @@ Les matrices produites par la fonction `matrice` contiennent des tableaux allou�
 12. Écrivez la fonction `void efface(struct Matrice)` qui libère l'espace occupé par une matrice dont les tableaux ont été alloués dynamiquement<sup id="fnb_2">[2](#fn_2)</sup>.
 
 13. Écrivez une fonction `struct Matrice multiplie(struct Matrice m1, struct Matrice m2)` qui calcule le résultat de la multiplication matricielle des matrices `m1` et `m2` (on suppose que le nombre de colonnes de `m1` est égal au nombre de lignes de `m1`).
-	**Indication :** Il faut encore une fois créer une nouvelle matrice dont les tableaux sont alloués dynamiquement (de dimensions `m1.nb_lignes` x `m2.nb_colonnes`) et calculer chacun des coefficients en appliquant la règle de multiplication des matrices (il y a trois boucles imbriquées à faire).
+    **Indication :** Il faut encore une fois créer une nouvelle matrice dont les tableaux sont alloués dynamiquement (de dimensions `m1.nb_lignes` x `m2.nb_colonnes`) et calculer chacun des coefficients en appliquant la règle de multiplication des matrices (il y a trois boucles imbriquées à faire).
 
 ---
 Notes :
