@@ -51,12 +51,12 @@ int* copie(int *tab, int n) {
 
 Pour résoudre ce problème, on pourrait passer en argument de la fonction un pointeur vers un emplacement de mémoire réservé à l'avance, comme on l'a fait précédemment, mais une autre solution consiste à allouer un espace mémoire dans le tas, qui ne sera donc pas libéré à la fin de la fonction.
     
-Pour cela, on utilise la fonction `malloc` qui prend comme argument la taille de la mémoire à allouer (en octets) et renvoie l'adresse d'un pointeur vers cet espace. Ainsi, si l'on veut assez de place pour stocker *n* objets de type `int`, on peut utiliser la syntaxe<sup id="fnb_1">[1](#fn_1)</sup> :
+Pour cela, on utilise la fonction `malloc` qui prend comme argument la taille de la mémoire à allouer (en octets) et renvoie l'adresse d'un pointeur vers cet espace. Ainsi, si l'on veut assez de place pour stocker *n* objets de type `int`, on peut utiliser la syntaxe :
 ```C
 int *p;
 p = malloc(sizeof(int) * n);
 ```
-Notez que l'on utilise l'instruction `sizeof` pour déterminer l'espace mémoire occupé par un entier, ce qui permet de rester compatible entre les systèmes qui ne codent pas nécessairement les `int` sur le même espace, et permet aussi de ne pas avoir à se poser la question.
+Notez que l'on utilise l'instruction `sizeof` pour déterminer l'espace mémoire occupé par un entier, ce qui permet de rester compatible entre les systèmes qui ne codent pas nécessairement les `int` sur le même espace, et permet aussi de ne pas avoir à se poser la question<sup id="fnb_1">[1](#fn_1)</sup>.
     
 7. Réécrivez la fonction `copie` en utilisant une allocation dynamique pour la variable `tab2`. Compilez et vérifiez que tout se passe bien.
 
