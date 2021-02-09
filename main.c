@@ -11,10 +11,9 @@ void stl();
 
 int main() {
   int t[10] = {1, 8, 3, -14, 6, -29, 78, -6, 24, -10};
-  int p;
-  int s;
-  int min;
-  int max;
+  int p, s;
+  int x, y;
+  int min, max;
   stl();
 
   printf("Hello World !\n");
@@ -27,8 +26,13 @@ int main() {
   printf("somme: %i\nproduit: %i\n", s, p);
   stl();
 
+  f(12, 4, &x, &y); //Affiche résultats fonction f 
+  printf("x = %d, y = %d\n", x, y);
+  stl();
+
   minmax( t, 10, &min, &max);
   printf("min: %i\nmax: %i\n", min, max);
+  stl();
 
 }
 
